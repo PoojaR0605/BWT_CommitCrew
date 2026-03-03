@@ -19,7 +19,7 @@ It analyzes incoming messages across Email, SMS, and WhatsApp and returns a laye
 | 🟠 Authority Spoofing | Fake bank / CEO / government with mismatched domain |
 | 🟡 Brand Impersonation | Known brand name but sender domain doesn't match |
 | 🔵 Link Mismatch | Display text vs actual URL comparison |
-| 🟣 Sentiment Pressure | Fear and panic language scored by Claude AI |
+| 🟣 Sentiment Pressure | Fear and panic language detected via NLP |
 
 ---
 
@@ -45,16 +45,17 @@ It analyzes incoming messages across Email, SMS, and WhatsApp and returns a laye
 │                                                 │
 │  ① Pre-processor  →  Extract URLs, body, sender │
 │  ② Rule Engine    →  Regex heuristics           │
-│  ③ AI Layer       →  Call Claude API            │
+│  ③ AI Layer       →  NLP threat analysis        │
 │  ④ Score Builder  →  Assemble threat report     │
 └────────────────────┬────────────────────────────┘
                      │
-         HTTPS · Anthropic Claude API
+           NLP + Machine Learning
+           Threat Scoring Engine
                      │
                      ▼
 ┌─────────────────────────────────────────────────┐
-│         LAYER 03 — Claude AI Engine             │
-│       Anthropic API · Integrated via Trae       │
+│         LAYER 03 — AI Detection Engine          │
+│         Built and trained using Trae AI         │
 │                                                 │
 │  • Urgency score (0–10)                         │
 │  • Authority spoofing detection                 │
@@ -65,6 +66,15 @@ It analyzes incoming messages across Email, SMS, and WhatsApp and returns a laye
 └─────────────────────────────────────────────────┘
 ```
 
+**Layer 1 — React Frontend**
+User pastes a message, selects the channel, and hits Analyze. Results display as color-coded threat cards showing each manipulation tactic and why it is dangerous.
+
+**Layer 2 — FastAPI Backend**
+Extracts message content and runs it through a regex rule engine for initial heuristic scoring, then passes enriched context to the AI detection engine for deep analysis.
+
+**Layer 3 — AI Detection Engine**
+Built entirely using Trae AI. Analyzes the message for all 5 psychological manipulation vectors and returns a threat report with individual scores and a plain-English explanation.
+
 ## 🛠️ Tech Stack
 
 | Layer | Tool |
@@ -72,8 +82,8 @@ It analyzes incoming messages across Email, SMS, and WhatsApp and returns a laye
 | Build Platform | Trae AI |
 | Frontend | React + Tailwind CSS |
 | Backend | Python 3.11 + FastAPI |
-| AI Engine | Anthropic Claude API |
-| Detection | Regex + NLP Heuristics |
+| AI Detection | NLP + Regex Heuristics |
+| Styling | Dark Cyber Theme |
 
 ---
 
