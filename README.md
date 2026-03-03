@@ -3,12 +3,6 @@ Real-time AI-powered phishing detector that decodes psychological manipulation i
 
 # 🛡️ PhishLens — BWT_CommitCrew
 
-> A real-time manipulation-aware phishing detector built 100% on Trae AI.
-
-![Theme](https://img.shields.io/badge/Theme-Cyber%20Threat%20Detection-00ffe5?style=flat-square&labelColor=0a0a0a) ![Trae](https://img.shields.io/badge/Built%20With-Trae%20AI-9b4dff?style=flat-square&labelColor=0a0a0a) ![AI](https://img.shields.io/badge/AI-Claude%20API-3d8fff?style=flat-square&labelColor=0a0a0a)
-
----
-
 ## 💡 Solution Overview
 
 Most phishing tools ask *"Is this URL malicious?"* — that's the wrong question.
