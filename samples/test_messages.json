@@ -1,0 +1,16 @@
+{
+  "messages": [
+    {
+      "id": 1,
+      "text": "Your account will be suspended in 24 hours unless you verify your password immediately. Click http://security-check.example.com to confirm."
+    },
+    {
+      "id": 2,
+      "text": "Congratulations! You are the lucky winner of a free iPhone. Claim your prize now at www.claim-gifts.co."
+    },
+    {
+      "id": 3,
+      "text": "Reminder: Invoice due today. Please submit payment details and your OTP to avoid termination."
+    }
+  ]
+}
