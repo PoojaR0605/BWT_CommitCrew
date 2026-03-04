@@ -7,16 +7,21 @@ export default function App() {
   const [report, setReport] = useState(null);
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900">
-      <div className="max-w-5xl mx-auto p-6 space-y-6">
-        <h1 className="text-3xl font-bold">PhishLens</h1>
+    <div className="min-h-screen bg-black text-gray-100">
+      <div className="max-w-6xl mx-auto p-6 space-y-8">
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="text-3xl font-bold text-cyan-400">PhishLens <span aria-hidden>🛡️</span></div>
+            <div className="text-sm text-gray-400">Manipulation-Aware Threat Detector</div>
+          </div>
+        </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <InputPanel
             value={message}
             onChange={setMessage}
-            onAnalyze={() => {}}
+            onAnalyze={setReport}
           />
-          <ThreatDashboard report={report} />
+          {report && <ThreatDashboard result={report} />}
         </div>
       </div>
     </div>
