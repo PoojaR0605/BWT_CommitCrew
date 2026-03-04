@@ -39,6 +39,7 @@ def analyze_message(text: str) -> list:
                 "name": "Urgency Manipulation",
                 "description": ", ".join(sorted(set(urgency_found))),
                 "score": 9,
+                "confidence_score": _confidence_pct(len(urgency_found)),
             }
         )
     authority_terms = [
@@ -61,6 +62,7 @@ def analyze_message(text: str) -> list:
                 "name": "Authority Spoofing",
                 "description": ", ".join(sorted(set(authority_found))),
                 "score": 9,
+                "confidence_score": _confidence_pct(len(authority_found)),
             }
         )
     brands = ["paypal", "google", "amazon", "microsoft", "apple"]
@@ -77,6 +79,7 @@ def analyze_message(text: str) -> list:
     ]
     suspicious_hits = [s for s in suspicious if s in t]
     if brand_hits and suspicious_hits:
+        indicator_count = len(brand_hits) + len(suspicious_hits)
         threats.append(
             {
                 "name": "Brand Impersonation",
@@ -85,6 +88,7 @@ def analyze_message(text: str) -> list:
                 + "; patterns: "
                 + ", ".join(sorted(set(suspicious_hits))),
                 "score": 9,
+                "confidence_score": _confidence_pct(indicator_count),
             }
         )
     mismatch_descriptions = []
@@ -108,6 +112,7 @@ def analyze_message(text: str) -> list:
                 "name": "Link Mismatch",
                 "description": "; ".join(mismatch_descriptions[:5]),
                 "score": 10,
+                "confidence_score": _confidence_pct(len(mismatch_descriptions)),
             }
         )
     pressure_terms = [
@@ -124,6 +129,7 @@ def analyze_message(text: str) -> list:
                 "name": "Sentiment Pressure",
                 "description": ", ".join(sorted(set(pressure_found))),
                 "score": 10,
+                "confidence_score": _confidence_pct(len(pressure_found)),
             }
         )
     return threats
@@ -163,3 +169,12 @@ def _host_from_url(url: str) -> str:
 def _host_from_text(text: str) -> str:
     m = re.search(r"([a-z0-9.-]+\.[a-z]{2,})", text, re.IGNORECASE)
     return m.group(1).lower() if m else ""
+
+def _confidence_pct(count: int) -> int:
+    if count >= 3:
+        return 95
+    if count == 2:
+        return 75
+    if count == 1:
+        return 60
+    return 0

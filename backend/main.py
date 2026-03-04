@@ -30,10 +30,13 @@ def analyze(req: AnalyzeRequest):
     total = sum(int(t.get("score", 0)) for t in threats)
     overall_score = max(0, min(100, round(total * 2)))
     risk_level = _risk_level(overall_score)
+    confs = [int(t.get("confidence_score", 0)) for t in threats if isinstance(t.get("confidence_score", 0), (int, float))]
+    overall_confidence = 0 if not confs else round(sum(confs) / len(confs))
     explanation = _explain(threats, risk_level)
     result = {
         "overall_score": overall_score,
         "risk_level": risk_level,
+        "confidence_score": overall_confidence,
         "threats": threats,
         "explanation": explanation,
     }

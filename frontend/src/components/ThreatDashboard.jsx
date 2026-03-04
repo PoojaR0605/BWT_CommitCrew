@@ -19,6 +19,7 @@ export default function ThreatDashboard({ result, report }) {
   const level = ["CRITICAL", "HIGH", "MEDIUM", "LOW"].includes(levelRaw) ? levelRaw : "LOW";
   const threats = Array.isArray(data.threats) ? data.threats : [];
   const explanation = data.explanation || "";
+  const overallConf = Number(data.confidence_score || 0);
 
   const badge = (lvl) => {
     if (lvl === "CRITICAL") return "bg-red-600 text-white border-red-400";
@@ -38,12 +39,22 @@ export default function ThreatDashboard({ result, report }) {
     if (s >= 1) return "border-l-4 border-yellow-300";
     return "border-l-4 border-gray-700";
   };
+  const confBadge = (pct) => {
+    if (pct >= 90) return "bg-green-500 text-black border-green-300";
+    if (pct >= 70) return "bg-yellow-400 text-black border-yellow-300";
+    return "bg-red-600 text-white border-red-400";
+  };
 
   return (
     <div className="bg-gray-950 text-gray-100 rounded-lg border border-cyan-700 shadow-lg p-5 space-y-5">
       <div className="flex items-center justify-between">
         <div className="text-xl font-semibold text-cyan-400">Security Dashboard</div>
-        <div className={`px-3 py-1 rounded-md border text-sm ${badge(level)}`}>{level}</div>
+        <div className="flex items-center gap-2">
+          <div className={`px-3 py-1 rounded-md border text-sm ${badge(level)}`}>{level}</div>
+          <div className={`px-3 py-1 rounded-md border text-sm ${confBadge(Math.round(overallConf))}`}>
+            {Math.round(overallConf)}%
+          </div>
+        </div>
       </div>
       <div className="space-y-2">
         <div className="flex items-center justify-between text-sm">
@@ -74,6 +85,9 @@ export default function ThreatDashboard({ result, report }) {
                 <div className="text-sm">
                   <span className="text-gray-400">Score:</span>{" "}
                   <span className="font-bold">{Number(t.score || 0)}/10</span>
+                  {" "}|{" "}
+                  <span className="text-gray-400">Confidence:</span>{" "}
+                  <span className="font-bold">{Number(t.confidence_score || 0)}%</span>
                 </div>
               </div>
               <div className="text-sm text-gray-300 mt-2">{t.description}</div>
