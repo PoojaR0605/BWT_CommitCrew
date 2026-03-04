@@ -13,3 +13,5 @@ timestamp,channel,risk_level,overall_score,threats_detected,message_preview
 2026-03-04T09:05:51.541570,email,LOW,28,2,Your Amazon order has been cancelled. To reactivat
 2026-03-04T09:06:19.442972,email,MEDIUM,50,3,URGENT SECURITY ALERT: Your PayPal account has bee
 2026-03-04T09:10:32.077673,email,HIGH,56,3,URGENT SECURITY ALERT: Your PayPal account has bee
+2026-03-04T09:23:12.123211,email,HIGH,56,3,URGENT SECURITY ALERT: Your PayPal account has bee
+2026-03-04T09:35:35.144690,email,HIGH,56,3,URGENT: Your PayPal account has been suspended. Ve
