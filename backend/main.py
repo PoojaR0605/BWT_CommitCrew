@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
-from heuristics import analyze_message
+from heuristics import analyze_message_metrics
 from score_builder import build_report
 
 app = FastAPI()
@@ -10,6 +10,6 @@ class AnalyzeRequest(BaseModel):
 
 @app.post("/analyze")
 def analyze(req: AnalyzeRequest):
-    metrics = analyze_message(req.message)
+    metrics = analyze_message_metrics(req.message)
     report = build_report(metrics)
     return report
