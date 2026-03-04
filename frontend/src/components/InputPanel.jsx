@@ -6,21 +6,31 @@ export default function InputPanel({ value, onChange, onAnalyze }) {
   const [error, setError] = useState("");
 
   const submit = async () => {
+    if (!value || !value.trim()) {
+      setError("Please paste a message to analyze.");
+      return;
+    }
     setLoading(true);
     setError("");
     try {
       const res = await fetch("http://localhost:8000/analyze", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
         body: JSON.stringify({ message: value, channel }),
       });
-      if (!res.ok) {
-        throw new Error("Request failed");
+      if (res.ok) {
+        const data = await res.json();
+        if (onAnalyze) onAnalyze(data);
+      } else {
+        let msg = "Analysis failed. Please try again.";
+        try {
+          const err = await res.json();
+          if (err && err.detail) msg = String(err.detail);
+        } catch {}
+        setError(msg);
       }
-      const data = await res.json();
-      if (onAnalyze) onAnalyze(data);
     } catch (e) {
-      setError("Analysis failed. Please try again.");
+      setError("Network error. Please ensure the API is running on port 8000.");
     } finally {
       setLoading(false);
     }
