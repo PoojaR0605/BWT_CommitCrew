@@ -19,7 +19,8 @@ Most phishing detectors ask the wrong question — *"Is this URL malicious?"*
 Attackers don't just use bad links. They **weaponize human psychology** — manufacturing urgency, faking authority, and triggering panic before a user even pauses to think. Traditional tools miss this entirely because they:
 
 - Only check URLs against blacklists that go stale within minutes
-- Completely ignore the psychological manipulation inside the message
+- Completely ignore the psychological manipulation inside the message itself
+- Cannot detect phishing messages that contain **no links at all**
 - Cover email only — leaving SMS and WhatsApp users fully exposed
 - Return a binary Safe/Unsafe verdict with zero explanation, teaching users nothing
 
@@ -29,7 +30,9 @@ Attackers don't just use bad links. They **weaponize human psychology** — manu
 
 ## 💡 Solution Overview
 
-PhishLens is a real-time **communication trust scorer** that analyzes incoming messages across Email, SMS, and WhatsApp. It detects **5 psychological manipulation vectors** and returns a layered threat breakdown — telling users exactly why a message is dangerous, not just that it is.
+PhishLens is a real-time **communication trust scorer** that analyzes incoming messages across Email, SMS, and WhatsApp. It works on **both URL-based phishing and pure text messages with zero links** — detecting the psychological manipulation itself, not just malicious URLs.
+
+It identifies **6 threat vectors** and returns a layered breakdown — telling users exactly why a message is dangerous, with severity scores and plain-English explanations they can learn from.
 
 | # | Threat Vector | Detection Method |
 |---|---|---|
@@ -38,8 +41,9 @@ PhishLens is a real-time **communication trust scorer** that analyzes incoming m
 | 🟡 | **Brand Impersonation** | Known brand in body but sender domain doesn't match |
 | 🔵 | **Link Mismatch** | Display text URL vs actual href URL comparison |
 | 🟣 | **Sentiment Pressure** | Fear, panic, and threat language NLP scoring |
+| ⚪ | **Zero-Link Phishing** | Pure-text psychological manipulation — no URL needed — CEO fraud, gift card scams, social engineering |
 
-Every analysis returns an **overall risk level** (LOW / MEDIUM / HIGH / CRITICAL), individual threat scores from 0–10, and a plain-English explanation users can learn from.
+Every analysis returns an **overall risk level** (LOW / MEDIUM / HIGH / CRITICAL), individual threat scores from 0–10, and a plain-English explanation of exactly what manipulation tactics were found.
 
 ---
 
@@ -66,7 +70,7 @@ Every analysis returns an **overall risk level** (LOW / MEDIUM / HIGH / CRITICAL
 │          localhost:8000 · Python 3.11 + FastAPI       │
 │                                                      │
 │  ① Pre-processor   →  Extract URLs, sender, body     │
-│  ② Rule Engine     →  Regex heuristics               │
+│  ② Rule Engine     →  Regex + NLP heuristics         │
 │  ③ Score Builder   →  Assemble layered threat report │
 │  ④ Session Logger  →  Append to session_log.csv      │
 └─────────────────────────┬────────────────────────────┘
@@ -83,6 +87,7 @@ Every analysis returns an **overall risk level** (LOW / MEDIUM / HIGH / CRITICAL
 │  • Brand impersonation analysis                      │
 │  • Link mismatch check                               │
 │  • Sentiment pressure scoring                        │
+│  • Zero-link pure-text manipulation detection        │
 │  • Plain-English explanation for the user            │
 └──────────────────────────────────────────────────────┘
 ```
@@ -92,13 +97,30 @@ Every analysis returns an **overall risk level** (LOW / MEDIUM / HIGH / CRITICAL
 ## 🧠 How It Works
 
 **Layer 1 — React Frontend**
-User pastes a suspicious Email, SMS, or WhatsApp message, selects the channel, and clicks Analyze. Results render as color-coded threat cards. A session history panel tracks all previous analyses in the current session. A Clear/Reset button resets the dashboard without losing history.
+User pastes a suspicious Email, SMS, or WhatsApp message — with or without links — selects the channel, and clicks Analyze. Results render as color-coded threat cards showing each manipulation tactic found. A session history panel tracks all previous analyses and allows clicking any past result to reload it. A Clear/Reset button resets the dashboard without clearing history.
 
 **Layer 2 — FastAPI Backend**
-Receives the message and channel via HTTP POST. Extracts URLs, sender patterns, and body text. Runs a custom regex rule engine across all 5 threat vectors to generate heuristic scores. Assembles a final JSON threat report. Logs every analysis to `session_log.csv` for persistent history.
+Receives the message and channel via HTTP POST. Extracts URLs, sender patterns, and body text. Runs a custom regex and NLP rule engine across all 6 threat vectors — including pure text messages with no links — to generate heuristic scores. Assembles a final JSON threat report and logs every analysis to `session_log.csv` for persistent history.
 
 **Layer 3 — AI Detection Engine**
-Built entirely through Trae AI. Scores each of the 5 manipulation vectors independently, assigns an overall risk level, and generates a plain-English explanation of exactly what manipulation tactics were found and why the message is dangerous.
+Built entirely through Trae AI. Scores each of the 6 manipulation vectors independently, assigns an overall risk level, and generates a plain-English explanation of what tactics were found and why the message is dangerous — even when no URL is present.
+
+---
+
+## 📊 Session History
+
+Every analysis is automatically saved to `backend/session_log.csv` with the following columns:
+
+| Column | Description |
+|---|---|
+| timestamp | Date and time of the analysis |
+| channel | Email, SMS, or WhatsApp |
+| risk_level | LOW / MEDIUM / HIGH / CRITICAL |
+| overall_score | Score from 0 to 100 |
+| threats_detected | Number of threats found |
+| message_preview | First 50 characters of the message |
+
+Every scan is permanently recorded — even after closing the browser. Open `session_log.csv` in Excel or any spreadsheet tool to review the full analysis history.
 
 ---
 
@@ -106,13 +128,13 @@ Built entirely through Trae AI. Scores each of the 5 manipulation vectors indepe
 
 > Every line of code in this project was written, debugged, and refined entirely inside **Trae AI**. No external IDEs. No other platforms. Trae was our complete development environment from the first file to the final commit.
 
-We sincerely thank **Trae AI** for providing a powerful platform that made it possible to build a production-quality full-stack application completely through AI-assisted development. The Builder feature handled scaffolding, debugging, CORS configuration, component wiring, and iterative refinement — all through natural language prompts.
+We sincerely thank **Trae AI** for providing a powerful platform that made it possible to build a production-quality full-stack cybersecurity application through intelligent, prompt-driven development. The Builder feature handled scaffolding, debugging, CORS fixes, component wiring, and iterative refinement — all through natural language prompts inside Trae.
 
 | What We Built | How Trae Was Used |
 |---|---|
 | React Frontend | All components scaffolded, styled, and debugged via Trae Builder |
 | FastAPI Backend | Endpoint, CORS, heuristics engine — all generated through Trae |
-| Threat Detection Engine | 5-vector NLP detection logic written entirely in Trae |
+| Threat Detection Engine | 6-vector NLP + regex detection logic written entirely in Trae |
 | Session Logger | CSV history logger built and integrated via Trae Builder |
 | History Panel + Reset | UI features added and wired through Trae AI |
 
@@ -120,14 +142,14 @@ We sincerely thank **Trae AI** for providing a powerful platform that made it po
 
 ## 🕵️ Detection Coverage
 
-| Threat | Risk Level | Example Pattern |
+| Threat | Risk Level | Example |
 |---|---|---|
 | Urgency Manipulation | CRITICAL | "Act NOW or your account expires" |
 | Authority Spoofing | CRITICAL | Fake bank / government / CEO impersonation |
-| Brand Impersonation | HIGH | PayPal / Google / Amazon name with fake domain |
-| Link Mismatch | HIGH | "paypal.com" link pointing to malicious URL |
+| Brand Impersonation | HIGH | PayPal / Google / Amazon with fake domain |
+| Link Mismatch | HIGH | "paypal.com" text pointing to malicious URL |
 | Sentiment Pressure | MEDIUM | "suspended", "blocked", "unauthorized access" |
-| Zero-Link Phishing | HIGH | Pure psychological manipulation with no URL |
+| Zero-Link Phishing | HIGH | "Hi, I'm your CEO — urgently buy gift cards and send codes" |
 
 ---
 
@@ -140,7 +162,7 @@ BWT_CommitCrew/
 ├── architecture.png                   ← architecture diagram
 │
 ├── frontend/
-│   ├── src/App.jsx                    ← main app — wires all components
+│   ├── src/App.jsx                    ← main app entry
 │   ├── src/components/
 │   │   ├── InputPanel.jsx             ← message input + channel selector
 │   │   ├── ThreatDashboard.jsx        ← live threat score display
@@ -152,7 +174,7 @@ BWT_CommitCrew/
 │
 ├── backend/
 │   ├── main.py                        ← FastAPI app + /analyze endpoint
-│   ├── heuristics.py                  ← 5-vector psychological detection engine
+│   ├── heuristics.py                  ← 6-vector psychological detection engine
 │   ├── score_builder.py               ← threat report assembler
 │   ├── session_logger.py              ← CSV session history logger
 │   ├── session_log.csv                ← persistent analysis history
@@ -170,10 +192,11 @@ BWT_CommitCrew/
 |---|---|---|
 | Build Platform | **Trae AI** | Complete development environment |
 | Frontend | React 18 + Tailwind CSS | Live threat dashboard UI |
+| Runtime | Node.js 24 + Vite | Frontend package management and dev server |
 | Backend | Python 3.11 + FastAPI | Analysis engine + REST API |
-| Detection | Regex + NLP Heuristics | 5-vector manipulation scoring |
+| Server | Uvicorn | ASGI server for FastAPI |
+| Detection | Regex + NLP Heuristics | 6-vector manipulation scoring |
 | History | CSV Session Logger | Persistent analysis log |
-| Dev Server | Vite + Uvicorn | Frontend and backend runners |
 
 ---
 
@@ -184,9 +207,40 @@ BWT_CommitCrew/
 | Checks URL blacklists only | Analyzes psychological manipulation patterns |
 | Binary Safe / Unsafe verdict | Multi-layer threat breakdown with severity scores |
 | Email only | Email + SMS + WhatsApp |
+| Cannot detect zero-link phishing | Detects pure-text manipulation with no URLs |
 | No explanation given | Tells users exactly WHY a message is dangerous |
 | Reactive after user clicks | Proactive — intercepts before user acts |
-| Cannot detect zero-link phishing | Detects pure-text psychological manipulation |
+| No history tracking | Persistent CSV session log of all analyses |
+
+---
+
+## 🔮 Future Implementations
+
+PhishLens is designed to grow. The following enhancements are planned for future development:
+
+**Detection Improvements**
+- Eye-tracking integration to detect when users look at suspicious links before clicking
+- Voice call phishing detection (vishing) via real-time audio transcription
+- Multilingual support — detect manipulation tactics in regional languages
+- Fine-tuned ML model trained on real-world phishing datasets for higher accuracy
+
+**Platform Expansion**
+- Browser extension for Gmail and Outlook — scan emails in real time without copy-pasting
+- Mobile app for Android and iOS — scan SMS and WhatsApp messages natively
+- API endpoint for enterprise integration — connect PhishLens to existing security tools
+- Slack and Teams bot — analyze suspicious messages directly inside workplace chat
+
+**Analytics and Reporting**
+- Visual analytics dashboard showing threat trends over time
+- Post-session PDF report with all flagged messages and screenshots
+- Organization-level threat heatmap for security teams
+- Automated alerts when CRITICAL threats are detected
+
+**Intelligence Upgrades**
+- Threat intelligence feed integration — cross-reference with known phishing campaigns
+- Sender reputation scoring based on historical analysis
+- Crowdsourced threat database — community-reported phishing patterns
+- Continuous learning from new phishing tactics as they emerge
 
 ---
 
