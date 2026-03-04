@@ -1,0 +1,5 @@
+timestamp,channel,risk_level,overall_score,threats_detected,message_preview
+2026-03-04T08:20:09.695450,sms,LOW,12,1,Using your main A/c for UPI? Don't risk your savin
+2026-03-04T08:21:12.373503,whatsapp,LOW,0,0,wru hi
+2026-03-04T08:21:37.914319,whatsapp,LOW,0,0,"please come and meet in my cabin
+"

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-export default function InputPanel({ value, onChange, onAnalyze }) {
+export default function InputPanel({ value, onChange, onAnalyze, onReset }) {
   const [channel, setChannel] = useState("email");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -20,7 +20,13 @@ export default function InputPanel({ value, onChange, onAnalyze }) {
       });
       if (res.ok) {
         const data = await res.json();
-        if (onAnalyze) onAnalyze(data);
+        const payload = {
+          result: data,
+          channel,
+          message: (value || "").slice(0, 50),
+          timestamp: new Date().toISOString(),
+        };
+        if (onAnalyze) onAnalyze(payload);
       } else {
         let msg = "Analysis failed. Please try again.";
         try {
@@ -72,18 +78,31 @@ export default function InputPanel({ value, onChange, onAnalyze }) {
         <div className="text-red-400 text-sm">{error}</div>
       )}
       <div className="flex items-center justify-end">
-        <button
-          type="button"
-          disabled={loading}
-          onClick={submit}
-          className={`px-5 py-2 rounded-md font-medium ${
-            loading
-              ? "bg-gray-700 text-gray-300 cursor-not-allowed"
-              : "bg-cyan-500 text-black hover:bg-cyan-400"
-          }`}
-        >
-          {loading ? "Analyzing..." : "Analyze"}
-        </button>
+        <div className="flex gap-2">
+          <button
+            type="button"
+            disabled={loading}
+            onClick={submit}
+            className={`px-5 py-2 rounded-md font-medium ${
+              loading
+                ? "bg-gray-700 text-gray-300 cursor-not-allowed"
+                : "bg-cyan-500 text-black hover:bg-cyan-400"
+            }`}
+          >
+            {loading ? "Analyzing..." : "Analyze"}
+          </button>
+          <button
+            type="button"
+            disabled={loading}
+            onClick={() => {
+              onChange("");
+              if (onReset) onReset();
+            }}
+            className="px-5 py-2 rounded-md font-medium bg-gray-800 text-gray-200 border border-gray-700 hover:bg-gray-700"
+          >
+            Clear / Reset
+          </button>
+        </div>
       </div>
     </div>
   );

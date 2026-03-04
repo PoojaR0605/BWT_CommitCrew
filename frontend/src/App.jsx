@@ -1,10 +1,28 @@
 import React, { useState } from "react";
 import InputPanel from "./components/InputPanel.jsx";
 import ThreatDashboard from "./components/ThreatDashboard.jsx";
+import HistoryPanel from "./components/HistoryPanel.jsx";
 
 export default function App() {
   const [message, setMessage] = useState("");
   const [report, setReport] = useState(null);
+  const [history, setHistory] = useState([]);
+  const onAnalyze = (payload) => {
+    const { result, channel, message: msgPreview, timestamp } = payload || {};
+    setReport(result);
+    const entry = {
+      timestamp,
+      channel,
+      risk_level: result?.risk_level,
+      overall_score: result?.overall_score,
+      message: msgPreview,
+      result,
+    };
+    setHistory((prev) => [entry, ...prev]);
+  };
+  const onReset = () => {
+    setReport(null);
+  };
 
   return (
     <div className="min-h-screen bg-black text-gray-100">
@@ -19,9 +37,13 @@ export default function App() {
           <InputPanel
             value={message}
             onChange={setMessage}
-            onAnalyze={setReport}
+            onAnalyze={onAnalyze}
+            onReset={onReset}
           />
-          {report && <ThreatDashboard result={report} />}
+          <div className="space-y-6">
+            {report && <ThreatDashboard result={report} />}
+            <HistoryPanel items={history} onSelect={setReport} />
+          </div>
         </div>
       </div>
     </div>
