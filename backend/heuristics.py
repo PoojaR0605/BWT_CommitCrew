@@ -38,7 +38,7 @@ def analyze_message(text: str) -> list:
             {
                 "name": "Urgency Manipulation",
                 "description": ", ".join(sorted(set(urgency_found))),
-                "score": min(10, 3 + len(urgency_found) * 2),
+                "score": 9,
             }
         )
     authority_terms = [
@@ -60,7 +60,7 @@ def analyze_message(text: str) -> list:
             {
                 "name": "Authority Spoofing",
                 "description": ", ".join(sorted(set(authority_found))),
-                "score": min(10, 4 + len(authority_found) * 2),
+                "score": 9,
             }
         )
     brands = ["paypal", "google", "amazon", "microsoft", "apple"]
@@ -84,7 +84,7 @@ def analyze_message(text: str) -> list:
                 + ", ".join(sorted(set(brand_hits)))
                 + "; patterns: "
                 + ", ".join(sorted(set(suspicious_hits))),
-                "score": min(10, 5 + len(brand_hits) + len(suspicious_hits) // 2),
+                "score": 9,
             }
         )
     mismatch_descriptions = []
@@ -107,7 +107,7 @@ def analyze_message(text: str) -> list:
             {
                 "name": "Link Mismatch",
                 "description": "; ".join(mismatch_descriptions[:5]),
-                "score": min(10, 6 + len(mismatch_descriptions)),
+                "score": 10,
             }
         )
     pressure_terms = [
@@ -123,7 +123,7 @@ def analyze_message(text: str) -> list:
             {
                 "name": "Sentiment Pressure",
                 "description": ", ".join(sorted(set(pressure_found))),
-                "score": min(10, 4 + len(pressure_found) * 2),
+                "score": 10,
             }
         )
     return threats

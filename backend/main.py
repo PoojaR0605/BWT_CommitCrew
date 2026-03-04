@@ -45,11 +45,11 @@ def root():
     return {"status": "PhishLens API is running"}
 
 def _risk_level(score: int) -> str:
-    if score >= 85:
+    if score >= 76:
         return "CRITICAL"
-    if score >= 60:
+    if score >= 51:
         return "HIGH"
-    if score >= 30:
+    if score >= 26:
         return "MEDIUM"
     return "LOW"
 

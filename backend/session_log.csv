@@ -6,3 +6,10 @@ timestamp,channel,risk_level,overall_score,threats_detected,message_preview
 2026-03-04T08:28:24.997617,sms,LOW,12,1,Using your main A/c for UPI? Don't risk your savin
 2026-03-04T08:28:58.861590,whatsapp,LOW,0,0,We sent a message to your referrals ask him/her to
 2026-03-04T08:29:37.968984,sms,MEDIUM,46,3,URGENT: Your SBI bank account will be blocked in 2
+2026-03-04T09:04:16.512236,email,MEDIUM,54,3,URGENT: Your PayPal account has been suspended due
+2026-03-04T09:04:34.720142,sms,LOW,22,2,SBI Alert: Your account will be blocked in 24 hour
+2026-03-04T09:04:56.592159,whatsapp,LOW,26,2,"Hi, this is your CEO. I need you to urgently purch"
+2026-03-04T09:05:32.118133,email,LOW,28,2,Security Alert: Your Google account was accessed f
+2026-03-04T09:05:51.541570,email,LOW,28,2,Your Amazon order has been cancelled. To reactivat
+2026-03-04T09:06:19.442972,email,MEDIUM,50,3,URGENT SECURITY ALERT: Your PayPal account has bee
+2026-03-04T09:10:32.077673,email,HIGH,56,3,URGENT SECURITY ALERT: Your PayPal account has bee
