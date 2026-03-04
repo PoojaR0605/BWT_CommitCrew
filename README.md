@@ -32,7 +32,9 @@ Attackers don't just use bad links. They **weaponize human psychology** — manu
 
 PhishLens is a real-time **communication trust scorer** that analyzes incoming messages across Email, SMS, and WhatsApp. It works on **both URL-based phishing and pure text messages with zero links** — detecting the psychological manipulation itself, not just malicious URLs.
 
-It identifies **6 threat vectors** and returns a layered breakdown — telling users exactly why a message is dangerous, with severity scores and plain-English explanations they can learn from.
+It identifies **6 threat vectors** and returns a layered breakdown — telling users exactly why a message is dangerous, with severity scores, confidence percentages, and plain-English explanations they can learn from. Each threat is scored with an individual **confidence percentage** — 60% for single indicator matches, 75% for two indicators, and 95% for three or more — giving users a clear picture of detection certainty.
+
+> Each threat card includes a **?** help button that explains the threat in plain English, how attackers use it, and how to stay safe.
 
 | # | Threat Vector | Detection Method |
 |---|---|---|
@@ -43,7 +45,7 @@ It identifies **6 threat vectors** and returns a layered breakdown — telling u
 | 🟣 | **Sentiment Pressure** | Fear, panic, and threat language NLP scoring |
 | ⚪ | **Zero-Link Phishing** | Pure-text psychological manipulation — no URL needed — CEO fraud, gift card scams, social engineering |
 
-Every analysis returns an **overall risk level** (LOW / MEDIUM / HIGH / CRITICAL), individual threat scores from 0–10, and a plain-English explanation of exactly what manipulation tactics were found.
+Every analysis returns an **overall risk level** (LOW / MEDIUM / HIGH / CRITICAL), individual threat scores from 0–10, confidence percentages, and a plain-English explanation of exactly what manipulation tactics were found.
 
 ---
 
@@ -57,8 +59,9 @@ Every analysis returns an **overall risk level** (LOW / MEDIUM / HIGH / CRITICAL
 │  [ Paste Message ]  [ Email · SMS · WhatsApp ]       │
 │  [ Analyze Button ]  [ Clear / Reset Button ]        │
 │  [ Live Threat Score Dashboard ]                     │
-│  [ Manipulation Breakdown Cards ]                    │
+│  [ Manipulation Breakdown Cards + ? Help Tooltips ]  │
 │  [ Session History Panel ]                           │
+│  [ 🤖 Ask PhishLens — Floating AI Assistant ]        │
 └─────────────────────────┬────────────────────────────┘
                           │
                  HTTP POST /analyze
@@ -72,7 +75,8 @@ Every analysis returns an **overall risk level** (LOW / MEDIUM / HIGH / CRITICAL
 │  ① Pre-processor   →  Extract URLs, sender, body     │
 │  ② Rule Engine     →  Regex + NLP heuristics         │
 │  ③ Score Builder   →  Assemble layered threat report │
-│  ④ Session Logger  →  Append to session_log.csv      │
+│  ④ Confidence      →  Per-threat confidence scoring  │
+│  ⑤ Session Logger  →  Append to session_log.csv      │
 └─────────────────────────┬────────────────────────────┘
                           │
               NLP + Regex Detection Engine
@@ -82,7 +86,7 @@ Every analysis returns an **overall risk level** (LOW / MEDIUM / HIGH / CRITICAL
 │           LAYER 03 — AI Detection Engine             │
 │              Built entirely on Trae AI               │
 │                                                      │
-│  • Urgency score (0–10)                              │
+│  • Urgency score (0–10) + confidence %               │
 │  • Authority spoofing detection                      │
 │  • Brand impersonation analysis                      │
 │  • Link mismatch check                               │
@@ -97,13 +101,31 @@ Every analysis returns an **overall risk level** (LOW / MEDIUM / HIGH / CRITICAL
 ## 🧠 How It Works
 
 **Layer 1 — React Frontend**
-User pastes a suspicious Email, SMS, or WhatsApp message — with or without links — selects the channel, and clicks Analyze. Results render as color-coded threat cards showing each manipulation tactic found. A session history panel tracks all previous analyses and allows clicking any past result to reload it. A Clear/Reset button resets the dashboard without clearing history.
+User pastes a suspicious Email, SMS, or WhatsApp message — with or without links — selects the channel, and clicks Analyze. Results render as color-coded threat cards showing each manipulation tactic found, its score, and confidence percentage. A **?** help button on each card explains the threat in plain English. A session history panel tracks all previous analyses. A Clear/Reset button resets the dashboard without clearing history.
 
 **Layer 2 — FastAPI Backend**
-Receives the message and channel via HTTP POST. Extracts URLs, sender patterns, and body text. Runs a custom regex and NLP rule engine across all 6 threat vectors — including pure text messages with no links — to generate heuristic scores. Assembles a final JSON threat report and logs every analysis to `session_log.csv` for persistent history.
+Receives the message and channel via HTTP POST. Extracts URLs, sender patterns, and body text. Runs a custom regex and NLP rule engine across all 6 threat vectors — including pure text messages with no links — to generate heuristic scores and confidence levels. Assembles a final JSON threat report and logs every analysis to `session_log.csv` for persistent history.
 
 **Layer 3 — AI Detection Engine**
-Built entirely through Trae AI. Scores each of the 6 manipulation vectors independently, assigns an overall risk level, and generates a plain-English explanation of what tactics were found and why the message is dangerous — even when no URL is present.
+Built entirely through Trae AI. Scores each of the 6 manipulation vectors independently, assigns confidence percentages, assigns an overall risk level, and generates a plain-English explanation — even when no URL is present.
+
+---
+
+## 🤖 AI Assistant — Ask PhishLens
+
+PhishLens includes a built-in floating AI Assistant accessible via the **🤖 Ask PhishLens** button at the bottom right of the screen.
+
+Users can ask questions about any threat type, phishing tactics, or what risk levels mean — and get instant plain-English answers without leaving the app.
+
+**Example questions you can ask:**
+- *"What is urgency manipulation?"*
+- *"What does CRITICAL mean?"*
+- *"What is zero-link phishing?"*
+- *"How do I stay safe?"*
+- *"What is brand impersonation?"*
+- *"How do attackers trick people?"*
+
+The assistant provides educational, plain-English guidance that helps users understand phishing threats and protect themselves — making PhishLens not just a detector but a **phishing education tool**.
 
 ---
 
@@ -135,21 +157,23 @@ We sincerely thank **Trae AI** for providing a powerful platform that made it po
 | React Frontend | All components scaffolded, styled, and debugged via Trae Builder |
 | FastAPI Backend | Endpoint, CORS, heuristics engine — all generated through Trae |
 | Threat Detection Engine | 6-vector NLP + regex detection logic written entirely in Trae |
+| Confidence Scoring | Per-threat confidence system built via Trae Builder |
 | Session Logger | CSV history logger built and integrated via Trae Builder |
 | History Panel + Reset | UI features added and wired through Trae AI |
+| AI Assistant | Floating Ask PhishLens chat panel built entirely in Trae |
 
 ---
 
 ## 🕵️ Detection Coverage
 
-| Threat | Risk Level | Example |
-|---|---|---|
-| Urgency Manipulation | CRITICAL | "Act NOW or your account expires" |
-| Authority Spoofing | CRITICAL | Fake bank / government / CEO impersonation |
-| Brand Impersonation | HIGH | PayPal / Google / Amazon with fake domain |
-| Link Mismatch | HIGH | "paypal.com" text pointing to malicious URL |
-| Sentiment Pressure | MEDIUM | "suspended", "blocked", "unauthorized access" |
-| Zero-Link Phishing | HIGH | "Hi, I'm your CEO — urgently buy gift cards and send codes" |
+| Threat | Risk Level | Confidence | Example |
+|---|---|---|---|
+| Urgency Manipulation | CRITICAL | Up to 95% | "Act NOW or your account expires" |
+| Authority Spoofing | CRITICAL | Up to 95% | Fake bank / government / CEO impersonation |
+| Brand Impersonation | HIGH | Up to 95% | PayPal / Google / Amazon with fake domain |
+| Link Mismatch | HIGH | Up to 95% | "paypal.com" text pointing to malicious URL |
+| Sentiment Pressure | MEDIUM | Up to 95% | "suspended", "blocked", "unauthorized access" |
+| Zero-Link Phishing | HIGH | Up to 75% | "I'm your CEO — urgently buy gift cards" |
 
 ---
 
@@ -162,10 +186,10 @@ BWT_CommitCrew/
 ├── architecture.png                   ← architecture diagram
 │
 ├── frontend/
-│   ├── src/App.jsx                    ← main app entry
+│   ├── src/App.jsx                    ← main app + floating AI assistant
 │   ├── src/components/
 │   │   ├── InputPanel.jsx             ← message input + channel selector
-│   │   ├── ThreatDashboard.jsx        ← live threat score display
+│   │   ├── ThreatDashboard.jsx        ← threat cards + confidence + ? tooltips
 │   │   ├── ManipulationBreakdown.jsx  ← per-threat breakdown cards
 │   │   └── HistoryPanel.jsx           ← session history with click-to-load
 │   ├── index.html
@@ -174,7 +198,7 @@ BWT_CommitCrew/
 │
 ├── backend/
 │   ├── main.py                        ← FastAPI app + /analyze endpoint
-│   ├── heuristics.py                  ← 6-vector psychological detection engine
+│   ├── heuristics.py                  ← 6-vector detection + confidence scoring
 │   ├── score_builder.py               ← threat report assembler
 │   ├── session_logger.py              ← CSV session history logger
 │   ├── session_log.csv                ← persistent analysis history
@@ -195,7 +219,7 @@ BWT_CommitCrew/
 | Runtime | Node.js 24 + Vite | Frontend package management and dev server |
 | Backend | Python 3.11 + FastAPI | Analysis engine + REST API |
 | Server | Uvicorn | ASGI server for FastAPI |
-| Detection | Regex + NLP Heuristics | 6-vector manipulation scoring |
+| Detection | Regex + NLP Heuristics | 6-vector manipulation + confidence scoring |
 | History | CSV Session Logger | Persistent analysis log |
 
 ---
@@ -205,12 +229,13 @@ BWT_CommitCrew/
 | Traditional Detectors | PhishLens |
 |---|---|
 | Checks URL blacklists only | Analyzes psychological manipulation patterns |
-| Binary Safe / Unsafe verdict | Multi-layer threat breakdown with severity scores |
+| Binary Safe / Unsafe verdict | Multi-layer threat breakdown with severity + confidence scores |
 | Email only | Email + SMS + WhatsApp |
 | Cannot detect zero-link phishing | Detects pure-text manipulation with no URLs |
 | No explanation given | Tells users exactly WHY a message is dangerous |
 | Reactive after user clicks | Proactive — intercepts before user acts |
 | No history tracking | Persistent CSV session log of all analyses |
+| No user education | Built-in AI Assistant teaches users about phishing tactics |
 
 ---
 
@@ -219,7 +244,6 @@ BWT_CommitCrew/
 PhishLens is designed to grow. The following enhancements are planned for future development:
 
 **Detection Improvements**
-- Eye-tracking integration to detect when users look at suspicious links before clicking
 - Voice call phishing detection (vishing) via real-time audio transcription
 - Multilingual support — detect manipulation tactics in regional languages
 - Fine-tuned ML model trained on real-world phishing datasets for higher accuracy
@@ -238,7 +262,6 @@ PhishLens is designed to grow. The following enhancements are planned for future
 
 **Intelligence Upgrades**
 - Threat intelligence feed integration — cross-reference with known phishing campaigns
-- Sender reputation scoring based on historical analysis
 - Crowdsourced threat database — community-reported phishing patterns
 - Continuous learning from new phishing tactics as they emerge
 
