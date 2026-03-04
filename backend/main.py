@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from enum import Enum
 from heuristics import analyze_message
+from session_logger import log_session
 
 app = FastAPI()
 
@@ -30,12 +31,14 @@ def analyze(req: AnalyzeRequest):
     overall_score = max(0, min(100, round(total * 2)))
     risk_level = _risk_level(overall_score)
     explanation = _explain(threats, risk_level)
-    return {
+    result = {
         "overall_score": overall_score,
         "risk_level": risk_level,
         "threats": threats,
         "explanation": explanation,
     }
+    log_session(result, req.message, req.channel.value)
+    return result
 
 @app.get("/")
 def root():
